@@ -7,37 +7,42 @@ import java.util.List;
 
 public class HracPloch {
 
-    private Figs[] plocha;
+    private final Figs[] plocha;
     public Figs[] getPlocha(){
         return plocha;
     }
 
-    private int delkaPlochy;
+    private final int delkaPlochy;
 
-    private List<BarFig> hraci = new ArrayList<>();
-    private int pocetHracu;
+    private final List<BarFig> hraci = new ArrayList<>();
+    private final int pocetHracu;
 
     public List<BarFig> getHraci() {
         return hraci;
     }
 
-    private Map<BarFig, StartDomecek> domecky = new HashMap<>();
-    private Map<BarFig, CilDomecek> cile = new HashMap<>();
+    private final Map<BarFig, StartDomecek> domecky = new HashMap<>();
+    private final Map<BarFig, CilDomecek> cile = new HashMap<>();
 
+    public Map<BarFig, StartDomecek> getDomecky() {
+        return domecky;
+    }
     public Map<BarFig, CilDomecek> getCile() {
         return cile;
     }
 
-    private int pocetFigurek;
-    private Kostka kostka;
+    private final Kostka kostka;
     private boolean byloHozeno;
     private int hod;
 
-    public BarFig praveHraje;
+    private BarFig praveHraje;
+
+    public BarFig getPraveHraje() {
+        return praveHraje;
+    }
 
     public HracPloch(int vel, int pocFig, int pocHracu, Kostka k) {
         delkaPlochy = vel;
-        pocetFigurek = pocFig;
         pocetHracu = pocHracu;
         kostka = k;
 
@@ -48,18 +53,17 @@ public class HracPloch {
 
             hraci.add(novyHrac);
 
-            domecky.put(novyHrac, new StartDomecek(novyHrac, pocetFigurek));
-            cile.put(novyHrac, new CilDomecek(novyHrac, pocetFigurek));
+            domecky.put(novyHrac, new StartDomecek(novyHrac, pocFig));
+            cile.put(novyHrac, new CilDomecek(novyHrac, pocFig));
         }
 
         praveHraje = hraci.get(3);
 
         Figs figs = new Figs(hraci.get(3));
         plocha[4] = figs;
-    }
 
-    public boolean jeVolno(int kde) {
-        return plocha[kde] == null;
+        Figs figss = domecky.get(hraci.get(1)).nasaditFig(1);
+        plocha[7] = figss;
     }
 
     public boolean jeMoje(int kde) {
@@ -82,13 +86,18 @@ public class HracPloch {
         return (byloHozeno) ? hod : 0;
     }
 
-    public void nasaditFigurku() {
-        if(jeVolno(praveHraje.getStartovniPole())) {
-            plocha[praveHraje.getStartovniPole()] = domecky.get(praveHraje).nasaditFig();
-        }
-        else if(plocha[praveHraje.getStartovniPole()].getBarva() != praveHraje) {
-            vyhodit(praveHraje.getStartovniPole());
-            plocha[praveHraje.getStartovniPole()] = domecky.get(praveHraje).nasaditFig();
+    public void nasaditFigurku(int fig) {
+        if(hod == kostka.getPocetSten()) {
+            if(domecky.get(praveHraje).getFigurkyDoma()[fig] != null) {
+                if(plocha[praveHraje.getStartovniPole()] == null) {
+                    plocha[praveHraje.getStartovniPole()] = domecky.get(praveHraje).nasaditFig(fig);
+                }
+                else if(plocha[praveHraje.getStartovniPole()].getBarva() != praveHraje)
+                {
+                    vyhodit(praveHraje.getStartovniPole());
+                    plocha[praveHraje.getStartovniPole()] = domecky.get(praveHraje).nasaditFig(fig);
+                }
+            }
         }
     }
 
@@ -96,26 +105,32 @@ public class HracPloch {
         Figs jaka = plocha[kde];
         int kam = kde + hod;
 
-        if(!cile.get(praveHraje).mamTuhleFigurku(jaka)) {
-            if(kam > praveHraje.getVstupDoCile() && kde < praveHraje.getVstupDoCile()) {
-                int kamDoCile = kam - praveHraje.getVstupDoCile() - 1;
-                if(cile.get(praveHraje).jeVolno(kamDoCile)) {
-                    cile.get(praveHraje).jitDoCile(jaka, kamDoCile);
-                    plocha[kde] = null;
-                }
-            }
-            else if(jeVolno(spocitanaCesta(kam))) {
-                plocha[spocitanaCesta(kam)] = jaka;
-                plocha[kde] = null;
-            }
-            else if(plocha[spocitanaCesta(kam)].getBarva() != praveHraje) {
-                vyhodit(spocitanaCesta(kam));
-                plocha[spocitanaCesta(kam)] = jaka;
+        if(kam > praveHraje.getVstupDoCile() && kde <= praveHraje.getVstupDoCile()) {
+            int kamDoCile = kam - praveHraje.getVstupDoCile() - 1;
+            if(cile.get(praveHraje).jeVolno(kamDoCile)) {
+                cile.get(praveHraje).jitDoCile(jaka, kamDoCile);
             }
         }
-        else {
-            if(cile.get(praveHraje).jeVolno(kam)) {
-                cile.get(praveHraje).posunVCili(jaka, kde, kam);
+        else if(plocha[spocitanaCesta(kam)] == null) {
+            plocha[spocitanaCesta(kam)] = jaka;
+        }
+        else if(plocha[spocitanaCesta(kam)].getBarva() != praveHraje) {
+            vyhodit(spocitanaCesta(kam));
+            plocha[spocitanaCesta(kam)] = jaka;
+        }
+
+        plocha[kde] = null;
+    }
+
+    public void posunFigurkyVCili(int kde) {
+        Figs jaka = cile.get(praveHraje).getCil()[kde];
+        int kam = kde + hod;
+
+        if(jaka != null) {
+            if(kam < 4) {
+                if(cile.get(praveHraje).jeVolno(kam)) {
+                    cile.get(praveHraje).posunVCili(jaka, kde, kam);
+                }
             }
         }
     }
@@ -132,12 +147,24 @@ public class HracPloch {
     }
 
     public void konecHry() {
-        // KONEC
+        while(1<2) {
+            for (int i = 0; i < 1000000; i++) {
+                System.out.println(i);
+            }
+        }
     }
 
     public int spocitanaCesta(int kam) {
-        return (kam > delkaPlochy - 1) ? kam - delkaPlochy : kam;
+        int cesta = kam;
 
+        if(kam > delkaPlochy - 1) {
+            cesta -= delkaPlochy;
+        }
+        else if (kam < 0) {
+            cesta = delkaPlochy + kam;
+        }
+
+        return cesta;
     }
 
 

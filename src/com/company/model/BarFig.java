@@ -1,10 +1,10 @@
 package com.company.model;
 
 public class BarFig {
-    private int poradi;
+    private final int poradi;
     public int getPoradi() {return poradi;}
-    private int startovniPole;
-    private int vstupDoCile;
+    private final int startovniPole;
+    private final int vstupDoCile;
 
     private boolean muzuHrat;
 

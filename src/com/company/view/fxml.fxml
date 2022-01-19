@@ -9,7 +9,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #777;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.company.view.MainController">
     <children>
-        <FlowPane fx:id="Standa" layoutX="33.0" layoutY="14.0" prefHeight="350.0" prefWidth="500.0">
+        <FlowPane fx:id="Standa" layoutX="50.0" layoutY="14.0" prefHeight="350.0" prefWidth="500.0">
             <children>
                 <GridPane fx:id="Lada" alignment="CENTER" style="-fx-background-color: #255;">
                     <columnConstraints>
@@ -40,6 +40,6 @@
                     </rowConstraints>
                 </GridPane>
             </children></FlowPane>
-        <Button layoutX="33.0" layoutY="364.0" mnemonicParsing="false" onAction="#novaplocha" text="Button" />
+        <Button layoutX="50.0" layoutY="364.0" mnemonicParsing="false" onAction="#novaplocha" text="Zacit hru" />
     </children>
 </Pane>

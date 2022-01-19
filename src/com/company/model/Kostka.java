@@ -7,6 +7,9 @@ public class Kostka {
     private Random random = new Random();
 
     private int pocetSten;
+    public int getPocetSten() {
+        return pocetSten;
+    }
 
     public Kostka(int strany){
         pocetSten = strany;

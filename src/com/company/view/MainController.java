@@ -44,10 +44,10 @@ public class MainController {
     };
 
     private String[] barvy = new String[] {
-            "ff0000",
+            "ff5500",
             "00aaff",
             "00cc00",
-            "eecc00",
+            "ddcc00",
             };
 
     @FXML
@@ -61,6 +61,9 @@ public class MainController {
 
     @FXML
     public Button[][] ciklonky;
+
+    @FXML
+    public Button[][] domionky;
 
     @FXML
     public void novaplocha(){
@@ -87,6 +90,7 @@ public class MainController {
             }
         }
 
+
         ciklonky = new Button[4][4];
 
         for(int h = 0; h < 4; h++) {
@@ -96,23 +100,36 @@ public class MainController {
                 ciklonky[h][c].setFocusTraversable(false);
                 ciklonky[h][c].setDefaultButton(true);
 
+                int cil = h;
+                int poleCil = c;
+                ciklonky[h][c].setOnAction(e -> {
+                    klikPoleCil(cil, poleCil);
+                });
+
                 Lada.add(ciklonky[h][c], cile[h][c][0], cile[h][c][1]);
             }
         }
 
+        domionky = new Button[4][4];
+
         for(int a = 0; a < 4; a++) {
             for (int b = 0; b < 4; b++) {
-                Button pepik = new Button(String.valueOf(b + 1));
-                pepik.setPrefSize(Lada.getWidth() / 11, Lada.getHeight() / 11);
-                pepik.setFocusTraversable(false);
-                pepik.setStyle("-fx-border-color: #" + barvy[a] + ";" +
+                domionky[a][b] = new Button(String.valueOf(b + 1));
+                domionky[a][b].setPrefSize(Lada.getWidth() / 11, Lada.getHeight() / 11);
+                domionky[a][b].setFocusTraversable(false);
+                domionky[a][b].setStyle("-fx-border-color: #" + barvy[a] + ";" +
                         "-fx-border-width: 2" + ";" +
                         "-fx-border-insets: 0" + ";");
 
-                Lada.add(pepik, domecky[a][b][0], domecky[a][b][1]);
+                int c = a;
+                int d = b;
+                domionky[a][b].setOnAction(e -> {
+                    klikPoleDoma(c, d);
+                });
+
+                Lada.add(domionky[a][b], domecky[a][b][0], domecky[a][b][1]);
             }
         }
-
 
         Button kostka = new Button("X");
         kostka.setPrefSize(Lada.getWidth() / 11, Lada.getHeight() / 11);
@@ -128,7 +145,7 @@ public class MainController {
         aktualizacePlochy();
     }
 
-    public void klikPole(int pole){
+    private void klikPole(int pole){
         if(!hraciplocha.jeMoje(pole) || hraciplocha.kolikHozeno() == 0) return;
 
         hraciplocha.posunFigurky(pole);
@@ -136,7 +153,23 @@ public class MainController {
         aktualizacePlochy();
     }
 
-    public void aktualizacePlochy() {
+    private void klikPoleDoma(int domov, int poleDoma) {
+        if(hraciplocha.getPraveHraje().getPoradi() == domov) {
+            hraciplocha.nasaditFigurku(poleDoma);
+
+            aktualizacePlochy();
+        }
+    }
+
+    private void klikPoleCil(int cil, int poleCil) {
+        if(hraciplocha.getPraveHraje().getPoradi() == cil) {
+            hraciplocha.posunFigurkyVCili(poleCil);
+
+            aktualizacePlochy();
+        }
+    }
+
+    private void aktualizacePlochy() {
         for(int i = 0; i < tlacenky.length; i++) {
             if(hraciplocha.getPlocha()[i] == null) {
                 tlacenky[i].setStyle("");
@@ -155,36 +188,20 @@ public class MainController {
                 }
             }
         }
-    }
-
-    /*
-
-    @FXML
-    public void vytvoreniPlochy(){
-        Button[] policka=new Button[40];
-        for (int i=0; i<40; i++){
-            policka [i]= new Button();
-            policka[i].setOnAction(e -> System.out.println("Hello"));
+        for(int a = 0; a < domionky.length; a++) {
+            for(int b = 0; b < domionky.length; b++) {
+                if(hraciplocha.getDomecky().get(hraciplocha.getHraci().get(a)).getFigurkyDoma()[b] == null) {
+                    domionky[a][b].setStyle("-fx-border-color: #" + barvy[a] + ";" +
+                            "-fx-border-width: 2" + ";" +
+                            "-fx-border-insets: 0" + ";");
+                }
+                else {
+                    domionky[a][b].setStyle("-fx-border-color: #" + barvy[a] + ";" +
+                            "-fx-border-width: 2" + ";" +
+                            "-fx-border-insets: 0" + ";" +
+                            "-fx-background-color: #" + barvy[a] + ";");
+                }
+            }
         }
-        Standa.getChildren().addAll(policka);
     }
-
-    public void vytovreniStartDomecku(){
-        Button[] policka=new Button[16];
-        for (int i=0; i<16; i++) {
-            policka[i] = new Button();
-        }
-        Standa.getChildren().addAll(policka);
-    }
-
-    public void vytvoreniFinalDomecku(){
-        Button[] policka=new Button[16];
-        for (int i=0; i<16; i++) {
-            policka[i] = new Button();
-        }
-        Standa.getChildren().addAll(policka);
-    }
-
-
-     */
 }

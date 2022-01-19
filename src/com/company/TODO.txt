@@ -1,0 +1,8 @@
+
+TODO list:
+    - nasazovani figurky DONE
+    - posun do domecku DONE
+    - posun v domecku DONE
+    - vyhazovani figurek DONE
+    - stridani hracu
+    - ukonceni hry
