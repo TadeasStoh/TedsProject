@@ -1,5 +1,6 @@
 package com.company.model;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,6 +36,10 @@ public class HracPloch {
     private boolean byloHozeno;
     private int hod;
 
+    public boolean isByloHozeno() {
+        return byloHozeno;
+    }
+
     private BarFig praveHraje;
 
     public BarFig getPraveHraje() {
@@ -57,13 +62,9 @@ public class HracPloch {
             cile.put(novyHrac, new CilDomecek(novyHrac, pocFig));
         }
 
-        praveHraje = hraci.get(3);
+        kolikratHozeno = 0;
 
-        Figs figs = new Figs(hraci.get(3));
-        plocha[4] = figs;
-
-        Figs figss = domecky.get(hraci.get(1)).nasaditFig(1);
-        plocha[7] = figss;
+        praveHraje = hraci.get(0);
     }
 
     public boolean jeMoje(int kde) {
@@ -75,18 +76,35 @@ public class HracPloch {
         }
     }
 
+    private int kolikratHozeno;
+
     public void hoditKostkou() {
         if(!byloHozeno) {
-            byloHozeno = true;
             hod = kostka.hod();
+            if(domecky.get(praveHraje).mamVsechnyFigurky()) {
+                if(kolikratHozeno < 3) {
+                    kolikratHozeno++;
+                    if(hod == kostka.getPocetSten()) {
+                        byloHozeno = true;
+                    }
+                    else if(kolikratHozeno == 3) {
+                        konecTahu();
+                    }
+                }
+            }
+            else {
+                byloHozeno = true;
+            }
         }
     }
 
     public int kolikHozeno() {
-        return (byloHozeno) ? hod : 0;
+        return hod;
     }
 
     public void nasaditFigurku(int fig) {
+        if(!byloHozeno) return;
+
         if(hod == kostka.getPocetSten()) {
             if(domecky.get(praveHraje).getFigurkyDoma()[fig] != null) {
                 if(plocha[praveHraje.getStartovniPole()] == null) {
@@ -97,11 +115,15 @@ public class HracPloch {
                     vyhodit(praveHraje.getStartovniPole());
                     plocha[praveHraje.getStartovniPole()] = domecky.get(praveHraje).nasaditFig(fig);
                 }
+
+                byloHozeno = false;
             }
         }
     }
 
     public void posunFigurky(int kde) {
+        if(!byloHozeno) return;
+
         Figs jaka = plocha[kde];
         int kam = kde + hod;
 
@@ -118,11 +140,18 @@ public class HracPloch {
             vyhodit(spocitanaCesta(kam));
             plocha[spocitanaCesta(kam)] = jaka;
         }
+        else if(plocha[spocitanaCesta(kam)].getBarva() == praveHraje) {
+            return;
+        }
 
         plocha[kde] = null;
+
+        konecTahu();
     }
 
     public void posunFigurkyVCili(int kde) {
+        if(!byloHozeno) return;
+
         Figs jaka = cile.get(praveHraje).getCil()[kde];
         int kam = kde + hod;
 
@@ -133,6 +162,8 @@ public class HracPloch {
                 }
             }
         }
+
+        konecTahu();
     }
 
     public void vyhodit(int kde) {
@@ -142,16 +173,24 @@ public class HracPloch {
     }
 
     public void konecTahu() {
-        byloHozeno = false;
-        praveHraje = hraci.get(praveHraje.getPoradi() + 1);
-    }
+        if(cile.get(praveHraje).mamFullHouse()) {
+            konecHry();
+        }
 
-    public void konecHry() {
-        while(1<2) {
-            for (int i = 0; i < 1000000; i++) {
-                System.out.println(i);
+        if(hod != kostka.getPocetSten()) {
+            if(praveHraje.getPoradi() < hraci.size() - 1) {
+                praveHraje = hraci.get(praveHraje.getPoradi() + 1);
+            }
+            else {
+                praveHraje = hraci.get(0);
             }
         }
+        byloHozeno = false;
+        kolikratHozeno = 0;
+    }
+
+    private void konecHry() {
+        JOptionPane.showMessageDialog(null, "Vyhral hrac " + (praveHraje.getPoradi() + 1));
     }
 
     public int spocitanaCesta(int kam) {

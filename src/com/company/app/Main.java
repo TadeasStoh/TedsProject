@@ -10,11 +10,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        while(1<2) {
-            for (int i = 0; i < 1000000; i++) {
-                System.out.println(i);
-            }
-        }
     }
 
     @Override

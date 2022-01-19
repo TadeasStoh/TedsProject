@@ -65,6 +65,8 @@ public class MainController {
     @FXML
     public Button[][] domionky;
 
+    public Button kostka;
+
     @FXML
     public void novaplocha(){
 
@@ -89,7 +91,6 @@ public class MainController {
                 }
             }
         }
-
 
         ciklonky = new Button[4][4];
 
@@ -131,17 +132,24 @@ public class MainController {
             }
         }
 
-        Button kostka = new Button("X");
+        kostka = new Button("X");
         kostka.setPrefSize(Lada.getWidth() / 11, Lada.getHeight() / 11);
         kostka.setFocusTraversable(false);
         kostka.setOnAction(actionEvent ->
         {
             hraciplocha.hoditKostkou();
             kostka.setText(String.valueOf(hraciplocha.kolikHozeno()));
+            aktualizacePlochy();
         });
 
         Lada.add(kostka, 5, 5);
 
+        aktualizacePlochy();
+    }
+
+    @FXML
+    public void ukoncitTah() {
+        hraciplocha.konecTahu();
         aktualizacePlochy();
     }
 
@@ -203,5 +211,8 @@ public class MainController {
                 }
             }
         }
+        kostka.setStyle("-fx-border-color: #" + barvy[hraciplocha.getPraveHraje().getPoradi()] + ";" +
+                "-fx-border-width: 2");
+        kostka.setDefaultButton(!hraciplocha.isByloHozeno());
     }
 }

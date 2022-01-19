@@ -4,5 +4,6 @@ TODO list:
     - posun do domecku DONE
     - posun v domecku DONE
     - vyhazovani figurek DONE
-    - stridani hracu
-    - ukonceni hry
+    - stridani hracu DONE
+    - ukonceni hry DONE
+    HOTOVO

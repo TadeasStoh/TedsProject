@@ -6,6 +6,8 @@ public class StartDomecek {
 
     private final Figs[] figurkyDoma;
 
+    private final BarFig barva;
+
     public Figs[] getFigurkyDoma() {
         return figurkyDoma;
     }
@@ -29,9 +31,18 @@ public class StartDomecek {
         for(int i = 0; i < 4; i++) {
             if(figurkyDoma[i] == null) {
                 figurkyDoma[i] = vracenaFig;
+                break;
             }
         }
     }
 
-    private BarFig barva;
+    public boolean mamVsechnyFigurky() {
+        int figs = 0;
+
+        for (int i = 0; i < figurkyDoma.length; i++) {
+            if(figurkyDoma[i] != null) figs++;
+        }
+
+        return figs == figurkyDoma.length;
+    }
 }

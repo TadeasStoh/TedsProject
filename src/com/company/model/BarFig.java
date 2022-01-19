@@ -14,11 +14,6 @@ public class BarFig {
         vstupDoCile = v;
     }
 
-    public void konecProMe(BarFig b) {
-        if(b == this) {
-            muzuHrat = false;
-        }
-    }
     public int getStartovniPole(){return startovniPole;}
     public int getVstupDoCile(){return vstupDoCile;}
 }

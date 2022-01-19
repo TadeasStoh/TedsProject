@@ -22,9 +22,6 @@ public class CilDomecek {
 
     public void jitDoCile(Figs kdo, int kam) {
         cil[kam] = kdo;
-        if(cil.length == pocetFigurek) {
-            barva.konecProMe(barva);
-        }
     }
 
     public void posunVCili(Figs kdo, int odkud, int kam) {
@@ -47,5 +44,17 @@ public class CilDomecek {
         }
 
         return ano;
+    }
+
+    public boolean mamFullHouse() {
+        int figs = 0;
+
+        for(int i = 0; i < cil.length; i++) {
+            if(cil[i] != null) {
+                figs++;
+            }
+        }
+
+        return figs == cil.length;
     }
 }
